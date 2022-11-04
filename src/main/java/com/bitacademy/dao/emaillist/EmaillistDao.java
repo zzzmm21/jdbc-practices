@@ -1,4 +1,4 @@
-package com.bitacademy.emaillist.dao;
+package com.bitacademy.dao.emaillist;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
