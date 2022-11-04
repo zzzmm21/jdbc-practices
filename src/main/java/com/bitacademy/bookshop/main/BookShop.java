@@ -38,7 +38,7 @@ public class BookShop {
 	}
 
 	private static void rentBook(long no) {	
-		//new BookDao().updateStatus(no, "대여중");
+		new BookDao().updateStatus(no,"대여중");
 	}
 }
 		

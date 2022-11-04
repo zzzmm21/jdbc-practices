@@ -15,7 +15,6 @@ public class AuthorDaoTest {
 		testInsert("원수연");
 	}
 
-	
 	private static void testInsert(String name) {
 		AuthorDao dao = new AuthorDao();
 		

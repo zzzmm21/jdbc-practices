@@ -10,6 +10,8 @@ import java.util.List;
 
 import com.bitacademy.bookshop.vo.BookVo;
 
+import test.DeptVo;
+
 public class BookDao {
 
 	public boolean insert(BookVo vo) {
@@ -111,6 +113,52 @@ public class BookDao {
 		
 		return result;
 	}
+	public boolean updateStatus(long no ,String status) {
+		boolean result = false;
+		System.out.println(result ? "성공" : "실패");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		
+		try {
+			
+			conn = getConnection();
+			
+			//3. Statement 생성
+			String sql = 
+					"update book" +
+					"   set stauts = ?" +
+				    " where no = ?";
+				
+			pstmt = conn.prepareStatement(sql);
+			
+			//4. SQL 실행
+			pstmt.setString(1,status);
+			pstmt.setLong(2, no);
+			
+			int count = pstmt.executeUpdate();
+			
+			result = count == 1;
+			
+
+		} catch (SQLException e) {
+			System.out.println("Error:" + e);
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
 	
 	private Connection getConnection() throws SQLException {
 		Connection conn = null;
@@ -126,4 +174,6 @@ public class BookDao {
 		
 		return conn;
 	}
+
+	
 }
