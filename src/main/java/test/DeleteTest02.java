@@ -2,22 +2,21 @@ package test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class InsertTest01 {
+public class DeleteTest02 {
 
 	public static void main(String[] args) {
-		insert("시스템");
-		insert("마케팅");
-		insert("운영");
+		boolean result = delete(7L);
+		System.out.println(result ? "성공" : "실패");
 	}
 
-	private static Boolean insert(String name) {
+	private static boolean delete(Long no) {
 		boolean result = false;
-		
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		
 		try {
 			//1. JDBC Driver Class Loading
@@ -27,18 +26,18 @@ public class InsertTest01 {
 			String url = "jdbc:mysql://127.0.0.1:3306/webdb?charset=utf8";
 			conn = DriverManager.getConnection(url, "webdb", "webdb");
 			
-			//3. Statement 생성
-			stmt = conn.createStatement();
+			//3. Statement 준비
+			String sql = 
+					"delete" +
+					"  from dept" +
+					" where no =  ?";
+			pstmt = conn.prepareStatement(sql);
 			
 			//4. SQL 실행
-			String sql = 
-				" insert" +
-				"   into dept" +
-				" values (null, '" + name + "')";
+			pstmt.setLong(1,no);
 			
-			int count = stmt.executeUpdate(sql);
-
-			//6. 결과 처리
+			int count = pstmt.executeUpdate();
+			
 			result = count == 1;
 			
 		} catch (ClassNotFoundException e) {
@@ -47,8 +46,8 @@ public class InsertTest01 {
 			System.out.println("Error:" + e);
 		} finally {
 			try {
-				if(stmt != null) {
-					stmt.close();
+				if(pstmt != null) {
+					pstmt.close();
 				}
 				
 				if(conn != null) {
@@ -61,4 +60,7 @@ public class InsertTest01 {
 		
 		return result;
 	}
+	
+	
+
 }

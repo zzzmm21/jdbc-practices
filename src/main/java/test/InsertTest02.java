@@ -2,43 +2,48 @@ package test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class InsertTest01 {
+public class InsertTest02 {
 
 	public static void main(String[] args) {
-		insert("시스템");
-		insert("마케팅");
-		insert("운영");
+		insert("시스템2");
+		insert("마케팅2");
+		insert("운영2");
 	}
 
 	private static Boolean insert(String name) {
 		boolean result = false;
 		
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		
 		try {
 			//1. JDBC Driver Class Loading
 			Class.forName("org.mariadb.jdbc.Driver");
 			
 			//2. 연결하기
-			String url = "jdbc:mysql://127.0.0.1:3306/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
+			String url = "jdbc:mysql://127.0.0.1:3306/employees?charset=utf8";
+			conn = DriverManager.getConnection(url, "hr", "hr");
 			
-			//3. Statement 생성
-			stmt = conn.createStatement();
-			
-			//4. SQL 실행
+			//3. Statement 준비
 			String sql = 
-				" insert" +
-				"   into dept" +
-				" values (null, '" + name + "')";
+					" insert" +
+					"   into dept" +
+					" values (null, ?)";
+			pstmt = conn.prepareStatement(sql);
+			//4. Binding
+			pstmt.setString(1, name);
 			
-			int count = stmt.executeUpdate(sql);
-
+			//5. SQL 실행
+		
+			
+			int count = pstmt.executeUpdate();
+			
 			//6. 결과 처리
+			
 			result = count == 1;
 			
 		} catch (ClassNotFoundException e) {
@@ -47,8 +52,8 @@ public class InsertTest01 {
 			System.out.println("Error:" + e);
 		} finally {
 			try {
-				if(stmt != null) {
-					stmt.close();
+				if(pstmt != null) {
+					pstmt.close();
 				}
 				
 				if(conn != null) {
